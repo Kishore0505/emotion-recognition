@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+*.pth
+*.csv
+*.mat
+.DS_Store
+.env

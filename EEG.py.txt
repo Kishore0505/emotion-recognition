@@ -1,0 +1,27 @@
+```python
+import scipy.io
+import pandas as pd
+import numpy as np
+from scipy.signal import welch
+
+# Load DREAMER dataset
+data = scipy.io.loadmat('DREAMER.mat')
+EEG_data = data['EEG'][0]
+
+extracted_features = []
+
+for subject in EEG_data:
+    trials = subject[0]
+    for trial in trials:
+        trial_data = trial[0]  # EEG signal for 14 channels
+        features = []
+        for channel in trial_data:
+            freqs, psd = welch(channel, fs=128)
+            features.append(np.mean(psd))
+            features.append(np.std(psd))
+        extracted_features.append(features)
+
+columns = [f'EEG_feat{i+1}' for i in range(len(extracted_features[0]))]
+df = pd.DataFrame(extracted_features, columns=columns)
+df.to_csv('Extracted_EEG.csv', index=False)
+```
